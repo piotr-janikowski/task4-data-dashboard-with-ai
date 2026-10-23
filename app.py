@@ -58,7 +58,7 @@ for tab, store in zip(store_tabs, STORES):
         render_store(get_results(store))
 
 st.divider()
-chat_tab, control_tab = st.tabs(["Part 2 · Ask your data", "Part 3 · Control the dashboard"])
+chat_tab, control_tab = st.tabs(["Ask your data", "Control the dashboard"])
 
 with chat_tab:
     st.subheader("Ask questions about your data")
@@ -82,7 +82,6 @@ with chat_tab:
                     answer = f"I could not get an answer: {exc}"
             st.markdown(answer)
         st.session_state[qa_key].append({"role": "assistant", "content": answer})
-    st.caption("The agent interprets your question and uses read-only Python/Pandas analysis on the selected store data. It does not execute arbitrary code or use external data.")
 
 with control_tab:
     st.subheader("Control the dashboard with natural language")
@@ -146,4 +145,3 @@ with control_tab:
         st.session_state[control_history_key] = []
         st.rerun()
 
-    st.caption("Part 3 uses Groq to plan a table (filters, derived columns, grouping, sorting); Python/Pandas executes the plan against the selected store data. For meaning-based conditions (e.g. names or places in titles) the model labels the distinct text values of one column. Follow-up commands use conversation history. Data access is read-only and limited to the project's STORE folders.")
