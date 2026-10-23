@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import pandas as pd
@@ -78,7 +79,7 @@ with chat_tab:
                 try:
                     answer = answer_data_question(question, DATA_DIR / selected_store, st.session_state[qa_key][:-1])
                 except Exception as exc:
-                    answer = f"Nie udało się uzyskać odpowiedzi: {exc}"
+                    answer = f"I could not get an answer: {exc}"
             st.markdown(answer)
         st.session_state[qa_key].append({"role": "assistant", "content": answer})
     st.caption("The agent interprets your question and uses read-only Python/Pandas analysis on the selected store data. It does not execute arbitrary code or use external data.")
@@ -110,6 +111,9 @@ with control_tab:
                 for table in result.get("tables", []):
                     table_context += f"\n\n{table['title']}:\n" + pd.DataFrame(table["data"]).head(20).to_json(orient="records", force_ascii=False)
                 assistant_context = result.get("description", "") + table_context
+                if result.get("plan"):
+                    # Lets follow-ups ("only after 2020", "add revenue") rebuild the earlier conditions.
+                    assistant_context += "\n\nPlan used: " + json.dumps(result["plan"], ensure_ascii=False)
                 st.session_state[control_history_key].append({
                     "role": "assistant",
                     "display": result.get("description", "Analysis completed."),
@@ -134,9 +138,12 @@ with control_tab:
                         st.dataframe(pd.DataFrame(table["data"]), hide_index=True, width="stretch")
                     else:
                         st.info("No matching rows were found.")
+                if result.get("plan"):
+                    with st.expander("How the command was interpreted"):
+                        st.json(result["plan"], expanded=False)
 
     if st.button("Clear conversation", key="clear_dashboard_conversation"):
         st.session_state[control_history_key] = []
         st.rerun()
 
-    st.caption("Part 3 uses the same read-only Groq/Python/Pandas analytical agent as Part 2. Follow-up commands use the conversation history. Data access is limited to the project's STORE folders.")
+    st.caption("Part 3 uses Groq to plan a table (filters, derived columns, grouping, sorting); Python/Pandas executes the plan against the selected store data. For meaning-based conditions (e.g. names or places in titles) the model labels the distinct text values of one column. Follow-up commands use conversation history. Data access is read-only and limited to the project's STORE folders.")

@@ -5,12 +5,12 @@ This project is a data analytics application built with Python and Streamlit. It
 The application works with data from five stores. It processes data about users, books, and orders, and presents the results in an interactive dashboard.
 
 ## Project structure:
-- `app.py` - main application
-- `src/` - data processing, analytics, dashboard control, AI Chat
-- `analyze_data/` - scripts for analyzing raw data
-- `data/` - input data
-- `output/` - generated charts
-- `run_all.py` - script for running data analysis tasks
+- `app.py` main application
+- `src/` data processing, analytics, dashboard control, AI Chat
+- `analyze_data/` scripts for analyzing raw data
+- `data/` input data
+- `output/` generated charts
+- `run_all.py` script for running data analysis tasks
 
 ## Running the application
 1. Clone this repository
@@ -19,6 +19,7 @@ The application works with data from five stores. It processes data about users,
 4. Start the application -> `streamlit run app.py`
 
 > *If you change some data in `/data` folder just run -> `python run_all.py` before starting the application.*
+> *The AI chat may take some time to respond, but it should eventually answer your questions.*
 
 ---
 
